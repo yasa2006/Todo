@@ -5,121 +5,382 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple To-Do App</title>
     <style>
+        :root{
+            --card-bg: rgba(255,255,255,0.08);
+            --glass-bg: rgba(255,255,255,0.06);
+            --accent: #fff;
+            --muted: rgba(255,255,255,0.85);
+        }
+
+        /* Animated gradient background */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-            background: linear-gradient(135deg, darkgreen, teal);
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(120deg, #2b5876, #4e4376, #008793, #0f9b8e);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
             min-height: 100vh;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Main app card */
+        .app {
+            width: 100%;
+            max-width: 680px;
+            margin: 40px;
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            color: var(--accent);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        header.app-header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            margin-bottom:18px;
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 26px;
+            margin: 0;
+            letter-spacing: 0.4px;
+            transform-origin: center;
+            animation: float 6s ease-in-out infinite;
         }
 
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0); }
+        }
+
+        .date-time{
+            font-size: 14px;
+            color: var(--muted);
+            min-width: 180px;
+            text-align:right;
+        }
 
         .input-container {
-            margin-bottom: 20px;
+            display:flex;
+            gap:10px;
+            margin-bottom: 18px;
+            align-items: center;
         }
 
         #todoInput {
-            padding: 8px;
-            font-size: 14px;
-            width: 70%;
-            border: 1px solid black;
+            padding: 10px 12px;
+            font-size: 15px;
+            flex: 1 1 auto;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.18);
+            color: var(--accent);
+            outline: none;
+            transition: box-shadow .18s ease, transform .12s ease;
         }
+
+        #todoInput:focus{ box-shadow: 0 6px 18px rgba(0,0,0,0.35); transform: translateY(-1px); }
 
         #addButton {
-            padding: 8px 16px;
-            font-size: 14px;
-            border: 1px solid black;
-            background: white;
+            padding: 10px 16px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(90deg, #00d4ff, #0066ff);
+            color: white;
             cursor: pointer;
+            box-shadow: 0 6px 18px rgba(6, 82, 255, 0.18);
+            transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
         }
 
+        #addButton:hover{ transform: translateY(-3px); }
+        #addButton:active{ transform: translateY(-1px); }
 
         #todoList {
             list-style: none;
             padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 10px;
         }
 
+        /* Sections */
+        .section {
+            margin-top: 16px;
+        }
+
+        .section h2{
+            margin: 10px 0 8px 0;
+            font-size: 16px;
+            color: var(--muted);
+        }
+
+        .due-date{
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-left:8px;
+        }
+
+        /* todo item style */
         #todoList li {
-            padding: 10px;
-            margin-bottom: 5px;
-            border: 1px solid black;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid rgba(255,255,255,0.04);
+            color: var(--accent);
+            transform-origin: left center;
+            animation: slideIn .28s ease both;
+        }
+
+        @keyframes slideIn{
+            from { opacity:0; transform: translateY(10px) scale(.995); }
+            to { opacity:1; transform: translateY(0) scale(1); }
         }
 
         .delete-btn {
-            padding: 4px 8px;
-            font-size: 12px;
-            border: 1px solid black;
-            background: white;
+            padding: 8px 12px;
+            font-size: 13px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255,255,255,0.06);
+            color: #ffdddd;
             cursor: pointer;
+            transition: transform .12s ease, background .12s ease;
+        }
+
+        .delete-btn:hover{ transform: translateY(-3px); background: rgba(255,0,0,0.12); }
+
+        /* small screens */
+        @media (max-width:480px){
+            .app{ margin: 18px; padding: 18px; }
+            .date-time{ display:none; }
         }
     </style>
 </head>
 <body>
-    <h1>To-Do List</h1>
+    <main class="app">
+        <header class="app-header">
+            <h1>To-Do List</h1>
+            <div id="dateTime" class="date-time" aria-live="polite"></div>
+        </header>
 
+        <div class="input-container">
+            <input type="text" id="todoInput" placeholder="Enter a task..." aria-label="New task">
+            <input type="date" id="dueDate" title="Optional due date" aria-label="Due date (optional)" />
+            <button id="addButton">Add</button>
+        </div>
 
-    <div class="input-container">
-        <input type="text" id="todoInput" placeholder="Enter a task...">
-        <button id="addButton">Add</button>
-    </div>
+        <section class="section" aria-labelledby="past-heading">
+            <h2 id="past-heading">Past Due Tasks</h2>
+            <ul id="pastList" aria-live="polite"></ul>
+        </section>
 
+        <section class="section" aria-labelledby="active-heading">
+            <h2 id="active-heading">Active Tasks</h2>
+            <ul id="activeList" aria-live="polite"></ul>
+        </section>
 
-    <ul id="todoList"></ul>
+        <section class="section" aria-labelledby="completed-heading">
+            <h2 id="completed-heading">Completed Tasks</h2>
+            <ul id="completedList" aria-live="polite"></ul>
+        </section>
+    </main>
 
     <script>
+    const todoInput = document.getElementById('todoInput');
+    const dueDateInput = document.getElementById('dueDate');
+    const addButton = document.getElementById('addButton');
+    const pastList = document.getElementById('pastList');
+    const activeList = document.getElementById('activeList');
+    const completedList = document.getElementById('completedList');
+    const dateTimeEl = document.getElementById('dateTime');
 
-        const todoInput = document.getElementById('todoInput');
-        const addButton = document.getElementById('addButton');
-        const todoList = document.getElementById('todoList');
+    const STORAGE_KEY = 'todos-v1';
+
+    let tasks = [];
+
+        function formatDateTime(d){
+            // Use locale-aware formatting; shows date and time
+            return d.toLocaleString(undefined, {
+                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+        }
+
+        function updateDateTime(){
+            const now = new Date();
+            dateTimeEl.textContent = formatDateTime(now);
+        }
+
+        // Start the clock
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // --- persistence helpers ---
+        function saveTasks(){
+            try{
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+            }catch(e){ console.warn('Failed to save tasks', e); }
+        }
+
+        function loadTasks(){
+            try{
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if(!raw) return [];
+                return JSON.parse(raw);
+            }catch(e){ console.warn('Failed to load tasks', e); return []; }
+        }
 
         function addTodo() {
             const taskText = todoInput.value.trim();
+            const dueDateVal = dueDateInput.value || null; // ISO yyyy-mm-dd or empty
 
             if (taskText === '') {
                 alert('Please enter a task!');
                 return;
             }
 
-            const li = document.createElement('li');
+            const id = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+            const newTask = {
+                id,
+                text: taskText,
+                createdAt: new Date().toISOString(),
+                dueDate: dueDateVal, // may be null
+                completed: false,
+                completedAt: null
+            };
 
-            const taskSpan = document.createElement('span');
-            taskSpan.textContent = taskText;
+            tasks.push(newTask);
+            saveTasks();
+            renderTasks();
 
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'Delete';
-            deleteBtn.className = 'delete-btn';
-
-            deleteBtn.addEventListener('click', function() {
-                li.remove();
-            });
-
-            li.appendChild(taskSpan);
-            li.appendChild(deleteBtn);
-
-            todoList.appendChild(li);
-
+            // Reset input and focus
             todoInput.value = '';
-
+            dueDateInput.value = '';
             todoInput.focus();
         }
 
         addButton.addEventListener('click', addTodo);
 
-        todoInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                addTodo();
+        // Pressing Enter in the text input adds; if focus on date, Enter also adds
+        [todoInput, dueDateInput].forEach(el => el.addEventListener('keypress', function(event){
+            if(event.key === 'Enter') addTodo();
+        }));
+
+        // Render and helpers
+        function isPastDue(task){
+            if(!task.dueDate) return false;
+            // compare date-only (no time)
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const due = new Date(task.dueDate + 'T00:00:00');
+            return due < today && !task.completed;
+        }
+
+        function formatDateShort(iso){
+            if(!iso) return '';
+            try{
+                const d = new Date(iso + 'T00:00:00');
+                return d.toLocaleDateString();
+            }catch(e){ return iso; }
+        }
+
+        function renderTasks(){
+            // clear lists
+            [pastList, activeList, completedList].forEach(u=>u.innerHTML='');
+
+            // sort: active by due date then created, past by due date, completed by completedAt desc
+            const past = tasks.filter(t => isPastDue(t)).sort((a,b)=> (a.dueDate||'').localeCompare(b.dueDate||''));
+            const active = tasks.filter(t => !t.completed && !isPastDue(t)).sort((a,b)=> (a.dueDate||'').localeCompare(b.dueDate||'') || a.createdAt.localeCompare(b.createdAt));
+            const completed = tasks.filter(t => t.completed).sort((a,b)=> (b.completedAt||'').localeCompare(a.completedAt||''));
+
+            function createTaskLI(task){
+                const li = document.createElement('li');
+                const left = document.createElement('div');
+                left.style.display = 'flex';
+                left.style.alignItems = 'center';
+                left.style.gap = '8px';
+
+                const text = document.createElement('span');
+                text.textContent = task.text;
+                if(task.completed) text.style.textDecoration = 'line-through';
+
+                if(task.dueDate){
+                    const dd = document.createElement('span');
+                    dd.className = 'due-date';
+                    dd.textContent = `due: ${formatDateShort(task.dueDate)}`;
+                    left.appendChild(text);
+                    left.appendChild(dd);
+                } else {
+                    left.appendChild(text);
+                }
+
+                const controls = document.createElement('div');
+                controls.style.display = 'flex';
+                controls.style.gap = '8px';
+
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = 'delete-btn';
+                toggleBtn.textContent = task.completed ? 'Undo' : 'Complete';
+                toggleBtn.title = task.completed ? 'Mark as active' : 'Mark as completed';
+                toggleBtn.addEventListener('click', ()=>{
+                    if(task.completed){
+                        task.completed = false; task.completedAt = null;
+                    } else {
+                        task.completed = true; task.completedAt = new Date().toISOString();
+                    }
+                    saveTasks(); renderTasks();
+                });
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-btn';
+                delBtn.textContent = 'Delete';
+                delBtn.addEventListener('click', ()=>{
+                    tasks = tasks.filter(t=> t.id !== task.id);
+                    saveTasks(); renderTasks();
+                });
+
+                controls.appendChild(toggleBtn);
+                controls.appendChild(delBtn);
+
+                li.appendChild(left);
+                li.appendChild(controls);
+
+                return li;
             }
-        });
+
+            past.forEach(t=> pastList.appendChild(createTaskLI(t)));
+            active.forEach(t=> activeList.appendChild(createTaskLI(t)));
+            completed.forEach(t=> completedList.appendChild(createTaskLI(t)));
+        }
+
+        // initialize
+        tasks = loadTasks();
+        renderTasks();
     </script>
 </body>
 </html>
